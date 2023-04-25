@@ -60,6 +60,19 @@ input, button {
 	color: var(--grey);
 }
 
+#task-input {
+	flex: 1 1 0%;
+	background-color: var(--darker);
+	padding: 1rem;
+	border-radius: 1rem;
+	margin-right: 1rem;
+	font-size: 1.25rem;
+}
+
+#task-input::placeholder {
+	color: var(--grey);
+}
+
 #new-task-submit {
 	color: pink;
 	font-size: 1.25rem;
