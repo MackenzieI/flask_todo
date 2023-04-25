@@ -9,23 +9,17 @@
     </head>    
     <body>    
         <h1>Edit Todo Task</h1>    
-        <hr>    
-        <form action="/updatedata" method="POST">    
+        <hr>   
         <p hidden>{% for task in tasks %}    
             ID : {{ task['_id'] }}<br/>  </p>  
+        <form id="new-task-form" action="/updatedata" method="POST">    
 
-
-            <div id="new-task-form">    
-                <tr>    
-                <td><input type="text" name="name" value="{{ task['content'] }}" placeholder="{{ task['content'] }}"></td>    
-                </tr>        
-            </div>    
-            
- 
-        {% endfor %}    
-            <button id="new-task-submit" type="submit"> Update Task </button>    
-            <br/>    
+            <div class="none">       
+                <td><input id="new-task-input" type="text" name="name" value="{{ task['content'] }}" placeholder="{{ task['content'] }}" ></td>            
+                <td><button id="new-task-submit" type="submit"> Update Task </button></td>    
         </form>    
+        </div>    
+        {% endfor %} 
         <a href="/">Return to TaskList</a>    
 </body>    
 </html>
