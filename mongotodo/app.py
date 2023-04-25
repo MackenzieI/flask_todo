@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, redirect
 
 from flask import Flask
 from pymongo import MongoClient
@@ -11,11 +11,7 @@ client = MongoClient("mongodb://127.0.0.1:27017")
 
 # Create the database
 db = client.flask_db
-todos = db.todos
-
-def redirect_url():
-    # Redirects the webpage to index
-    return request.args.get('next') or request.referrer or url_for('index')    
+todos = db.todos 
 
 @app.route('/', methods=('GET', 'POST'))
 def index():
@@ -28,7 +24,7 @@ def index():
 def post():
     # Submit a task with the form. Tasks are initialized as not done
     content = request.form['content']
-    todos.insert_one({'content': content, "done": "no"})
+    todos.insert_one({'content': content, "done": "no", "visibility": "visible"})
     return redirect('/')
 
 @app.route("/delete")    
@@ -45,23 +41,22 @@ def done ():
     id=request.values.get("_id")    
     task=todos.find({"_id":ObjectId(id)})    
     if(task[0]["done"]=="yes"):    
-        todos.update_one({"_id":ObjectId(id)}, {"$set": {"done":"no"}})    
+        todos.update_one({"_id":ObjectId(id)}, {"$set": {"done":"no", "visibility": "visible"}})    
     else:    
-        todos.update_one({"_id":ObjectId(id)}, {"$set": {"done":"yes"}})  
-        db.todos.hideIndex({"_id": ObjectId(id)})
+        todos.update_one({"_id":ObjectId(id)}, {"$set": {"done":"yes", "visibility": "hidden"}})  
     return redirect("/")
 
-@app.route("/update")    
+@app.route("/update", methods=['GET'])    
 def update ():    
     # Get the task id and redirect to update.html
-    id=request.values.get("_id")    
+    id=request.args.get("_id")    
     task=todos.find({"_id":ObjectId(id)})    
     return render_template('update.html', tasks=task)    
 
 @app.route("/updatedata", methods=['POST'])    
 def updatedata ():    
     # Update the task with its new content. Redirect to root
-    content=request.values.get("content")      
-    id=request.values.get("_id")    
-    todos.update_one({"_id":ObjectId(id)}, {'$set':{ "content":content }})    
-    return redirect("/")  
+    id=request.values.get("_id")
+    content=request.form['content']      
+    todos.update_one({"_id":ObjectId(id)}, {'$set':{ 'content': content }})    
+    return redirect("/") 
