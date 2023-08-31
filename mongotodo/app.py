@@ -5,9 +5,11 @@ from pymongo import MongoClient
 
 from bson.objectid import ObjectId
 
+import os
+
 # Init the Flask app
 app = Flask(__name__)
-client = MongoClient("mongodb://127.0.0.1:27017")
+client = MongoClient("ourmongo:27017")
 
 # Create the database
 db = client.flask_db
@@ -60,3 +62,8 @@ def updatedata ():
     content=request.form['content']      
     todos.update_one({"_id":ObjectId(id)}, {'$set':{ 'content': content }})    
     return redirect("/") 
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
+    #minikube start, kubectl get deployments, kubectl get pod, kubectl apply -f flask-deployment.yaml
